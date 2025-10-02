@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>フォルダ一覧</title>
+  <link rel="stylesheet" href="base.css">
+  <link rel="stylesheet" href="folder.css">
+  <script defer src="folder.js"></script>
+</head>
+
+<body>
+  <div class="page">
+    <header class="folder-header">
+      <h1 class="title">フォルダ</h1>
+       <!-- <span id="orgName"></span>###0909 -->
+      <nav class="breadcrumbs">
+        <ol>
+          <li class="current"></li>
+        </ol>
+      </nav>
+    </header>
+  
+    <div class="toolbar">
+      <div class="search">
+        <input type="text" id="searchInput" placeholder="検索...">
+      </div>
+      <div class="sort">
+        <select id="sortSelect">
+          <option value="name-asc">名前 昇順</option>
+          <option value="name-desc">名前 降順</option>
+          <option value="date-asc">日付 昇順</option>
+          <option value="date-desc">日付 降順</option>
+        </select>
+      </div>
+      <div class="view-toggle">
+        <select id="viewToggle">
+          <option value="list">リスト表示</option>
+          <option value="grid">グリッド表示</option>
+        </select>
+      </div>
+      <div class="counter" id="countText">0 件</div>
+    </div>
+  
+    <main class="folder-page">
+      <div id="fileList" class="file-list list-view"></div>
+      <p id="noResults" class="no-results hidden">該当するファイルはありません</p>
+    </main>
+
+    
+
+    <div class="folder-page">
+      <div class="action-buttons">
+        <button id="analyzeBtn">分析を見る</button>
+        <button id="deleteBtn" disabled>音源を削除</button>
+      </div>
+    </div>
+
+
+
+ 
+   <div class="bottom-nav">
+      <button class="nav-btn" id="micBtn" aria-label="録音">
+        <div class="icon-wrap"><img src="image/mic-icon.png" alt="録音"></div>
+        <div class="nav-label">録音</div>
+      </button>
+
+      <button class="nav-btn" id="fldBtn" aria-label="フォルダ">
+        <div class="icon-wrap"><img src="image/folder-icon.png" alt="フォルダ"></div>
+        <div class="nav-label">フォルダ</div>
+      </button>
+
+      <button class="nav-btn" id="setBtn" aria-label="設定">
+        <div class="icon-wrap"><img src="image/settings-icon.png" alt="設定"></div>
+        <div class="nav-label">設定</div>
+      </button>
+      
+      <!-- <button id="analyzeBtn" disabled>分析を見る</button> -->
+    </div>
+
+  </div>
+
+</body>
+</html>
+ 

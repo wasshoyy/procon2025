@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>新規アカウント作成</title>
+  <link rel="stylesheet" href="base.css">
+  <link rel="stylesheet" href="login.css">
+</head>
+
+
+<body>
+  <div class="container">
+
+    <div class="logo">
+      <img src="image/appname.png" alt="アプリ名">
+    </div>
+    <h1>新規アカウント作成</h1>
+
+
+    <div class="form-group">
+      <label for="name">ID</label>
+      <input type="text" id="new_name">
+    </div>
+
+    <div class="form-group">
+      <label for="password">パスワード</label>
+      <input type="password" id="new_password">
+    </div>
+
+    <div class="form-group">
+      <label for="password">パスワードを再入力</label>
+      <input type="password" id="new_rpassword">
+    </div>
+
+    
+    <!-- ###0908 -->
+    <div class="form-group">
+      <label for="invite_code">団体コード</label>
+      <input type="text" id="invite_code">
+    </div>
+    <!-- ###0908 -->
+
+
+    <p id="error">パスワードが一致していません</p>
+    <button1 id="newMakeBtn">アカウント作成</button1>
+  </div>
+
+    <script src="make_account.js"></script>
+</body>
+
+</html>

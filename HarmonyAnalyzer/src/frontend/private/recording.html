@@ -1,0 +1,177 @@
+<!-- recording.html -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>録音画面</title>
+
+  <link rel="stylesheet" href="base.css" />
+  <link rel="stylesheet" href="recording.css" />
+
+</head>
+<body class="recording-page">
+
+  <div class="container recording-container" id="mainContainer" data-recording-auto="0">
+    <h1 class="title">録音</h1>
+
+    <div class="settings-box" id="settingsBox">
+      <div class="settings-header">設定</div>
+
+      <!-- 曲情報グループ（曲名 / BPM / 拍子） -->
+      <div class="setting-group" role="group" aria-labelledby="grp-general-title" id="grp-general">
+
+        <div class="setting-item">
+          <label for="song-name">曲名</label>
+          <input type="text" id="song-name" value="" placeholder="例: マーチ" aria-label="曲名" />
+        </div>
+
+        <div class="setting-item">
+          <label for="tempo">テンポ (BPM)</label>
+          <input id="tempo" type="number" aria-label="テンポ (BPM)" min="30" max="300" value="120" />
+        </div>
+
+        <div class="setting-item">
+          <label for="time-signature">拍子</label>
+          <select id="time-signature" aria-label="拍子">
+            <option value="4/4" selected>4/4</option>
+            <option value="3/4">3/4</option>
+            <option value="2/4">2/4</option>
+            <option value="6/8">6/8</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 楽器グループ（演奏する楽器） -->
+      <div class="setting-group" role="group" aria-labelledby="grp-inst-title" id="grp-instrument">
+
+        <div class="setting-item">
+          <label for="instrument">楽器</label>
+          <select id="instrument" aria-label="演奏する楽器">
+            <option selected>フルート</option>
+            <option>オーボエ</option>
+            <option>ファゴット</option>
+            <option>クラリネット</option>
+            <option>サックス</option>
+            <option>トランペット</option>
+            <option>ホルン</option>
+            <option>トロンボーン</option>
+            <option>ユーフォニアム</option>
+            <option>チューバ</option>
+            <option>その他</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- カウントイングループ -->
+      <div class="setting-group" role="group" aria-labelledby="grp-countin-title" id="grp-countin">
+ 
+
+        <div class="setting-item">
+          <label for="countin">カウントイン</label>
+          <select id="countin" aria-label="カウントイン（小節数）">
+            <option value="0">なし</option>
+            <option value="1" selected>1小節</option>
+            <option value="2">2小節</option>
+          </select>
+        </div>
+      </div>
+
+    </div>
+
+    <p id="status-display" class="hidden" aria-live="polite"></p>
+
+    <div id="message-area" aria-live="polite" aria-atomic="true" class="message-area"></div>
+
+    <button id="start-btn" class="start-btn" aria-label="録音開始">録音開始</button>
+
+    <div class="bottom-nav">
+      <button class="nav-btn" id="micBtn" aria-label="録音">
+        <div class="icon-wrap"><img src="image/mic-icon.png" alt="録音"></div>
+        <div class="nav-label">録音</div>
+      </button>
+
+      <button class="nav-btn" id="fldBtn" aria-label="フォルダ">
+        <div class="icon-wrap"><img src="image/folder-icon.png" alt="フォルダ"></div>
+        <div class="nav-label">フォルダ</div>
+      </button>
+
+      <button class="nav-btn" id="setBtn" aria-label="設定">
+        <div class="icon-wrap"><img src="image/settings-icon.png" alt="設定"></div>
+        <div class="nav-label">設定</div>
+      </button>
+    </div>
+  </div>
+
+  <!-- 録音中オーバーレイ -->
+  <div id="recordOverlay" class="record-overlay" aria-hidden="true" role="dialog" aria-label="録音中の情報">
+    <div class="overlay-panel" role="document">
+      <header class="overlay-header">
+        <div class="rec-badge" aria-hidden="true"><span class="dot" aria-hidden="true"></span>REC</div>
+        <div class="overlay-timer" id="overlayTimer" aria-live="polite">00:00.00</div>
+      </header>
+
+      <main class="overlay-main">
+        <canvas id="waveformCanvas" class="waveform" aria-hidden="true"></canvas>
+
+        <div class="levels" aria-hidden="true">
+          <div class="level-col">
+            <div class="level-label">L</div>
+            <div class="level-meter" id="levelL"><div class="level-fill"></div></div>
+          </div>
+          <div class="level-col">
+            <div class="level-label">R</div>
+            <div class="level-meter" id="levelR"><div class="level-fill"></div></div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="overlay-footer">
+        <div class="control-row">
+          <button id="pauseBtn" class="ctrl-btn" title="一時停止" aria-pressed="false" aria-label="一時停止">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
+            <div class="btn-label">一時停止</div>
+          </button>
+
+          <button id="stopBtn" class="ctrl-btn stop" title="停止" aria-label="停止">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+            <div class="btn-label">停止</div>
+          </button>
+
+          <button id="discardBtn" class="ctrl-btn ghost" title="破棄" aria-label="破棄">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 3h6l1 1h4v2H4V4h4l1-1zm1 6v9h2V9H10zm4 0v9h2V9h-2z"/></svg>
+            <div class="btn-label">破棄</div>
+          </button>
+        </div>
+
+        <div class="small-hint">録音中は自動で保存されます。停止後に保存先を確認できます。</div>
+
+        <div class="overlay-message" role="status" aria-live="polite"></div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- カウントダウンモーダル -->
+  <div id="countdownModal" class="countdown-modal" aria-hidden="true" role="alert">
+    <div class="countdown-panel">
+      <div class="ring" id="countRing"></div>
+      <div class="count-number" id="countNumber">3</div>
+      <div class="count-sub">録音を開始します</div>
+    </div>
+  </div>
+
+  <!-- 処理中モーダル -->
+  <div id="processingModal" class="processing-modal" aria-hidden="true" role="status" aria-live="polite">
+    <div class="processing-panel">
+      <div class="spinner" aria-hidden="true"></div>
+      <div class="proc-text" id="processingText">測定結果を解析しています…</div>
+    </div>
+  </div>
+
+  <!-- npm版 Tone.js を ES Module で読み込む 
+  <script src="https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.js"></script>
+  -->
+  <script src="recording-ui.js"></script>
+  <script src="recording.js"></script>
+</body>
+</html>

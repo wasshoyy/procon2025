@@ -1,0 +1,220 @@
+/* recording.css — 改良版（グルーピング対応・全文） */
+
+/* body のセンタリングは recording ページのみ適用 */
+body.recording-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, var(--bg-start), var(--bg-end));
+}
+
+/* コンテナ（カード風） */
+.recording-container {
+  width: 92%;
+  max-width: 520px;
+  text-align: center;
+  background: var(--card-bg);
+  border-radius: 14px;
+  padding: 20px;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow);
+}
+
+/* タイトル */
+.title {
+  font-size: 28px;
+  margin: 0 0 14px;
+  color: var(--title-color);
+}
+
+/* 設定ボックス（外枠） */
+.settings-box {
+  border: 2px solid var(--accent);
+  border-radius: 10px;
+  padding: 18px;
+  position: relative;
+  background: var(--panel-bg-soft);
+  margin-bottom: 14px;
+}
+.settings-header {
+  position: absolute;
+  top: -14px;
+  left: 18px;
+  background: var(--accent);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+/* ========== 新規：設定グループ ========== */
+/* グループは settings-box 内で視覚的に分離されたカード風 */
+.setting-group {
+  border-radius: 10px;
+  padding: 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255, 255, 255, 0.01));
+  border: 1px solid rgba(0,0,0,0.04);
+  margin-top: 12px;
+  box-shadow: inset 0 -6px 12px rgba(0,0,0,0.02);
+}
+
+
+/* --------------- 設定アイテム --------------- */
+.setting-item {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin: 8px 0;
+}
+.setting-item label {
+  flex: 1;
+  text-align: left;
+  color: var(--title-color);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.setting-item select,
+.setting-item input {
+  flex: 2;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: #fff;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* 録音開始ボタン */
+.start-btn {
+  margin-top: 12px;
+  padding: 12px 36px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+  color: #fff;
+  border: none;
+  font-weight: 800;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  transition: transform 140ms ease, box-shadow 140ms ease, opacity 140ms ease;
+}
+.start-btn:active { transform: translateY(0); }
+.start-btn:hover:not([disabled]) { transform: translateY(-3px) scale(1.02); box-shadow: 0 14px 36px rgba(43,79,43,0.18); }
+.start-btn[disabled] { opacity: 0.6; cursor: not-allowed; filter: grayscale(6%); }
+
+.nav-btn:active { transform: translateY(0); }
+.icon-wrap { width: 64px; height: 64px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.04); overflow: hidden; transition: transform 120ms ease, box-shadow 120ms ease; }
+.icon-wrap img { max-width: 72%; max-height: 72%; object-fit: contain; display: block; }
+.nav-btn:hover .icon-wrap { transform: translateY(-4px) scale(1.04); box-shadow: 0 10px 30px rgba(0,0,0,0.12); }
+.nav-label { font-size: 12px; color: var(--muted); }
+
+/* ------------- 録音オーバーレイ ------------- */
+/* overlay は常に DOM にあって opacity で切替 (display:none を避ける) */
+.record-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--record-overlay-bg);
+  z-index: 1200;
+  padding: 24px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 260ms ease;
+}
+.record-overlay[aria-hidden="false"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* パネル本体（十分に視認できる色合い） */
+.overlay-panel {
+  width: min(920px, 96%);
+  max-width: 920px;
+  background: var(--overlay-panel-bg);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.04);
+  color: var(--overlay-text);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transform: translateY(6px);
+  transition: transform 260ms ease;
+}
+.record-overlay[aria-hidden="false"] .overlay-panel { transform: translateY(0); }
+
+/* header */
+.overlay-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.rec-badge { display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background: rgba(0,0,0,0.12); color: var(--overlay-text); font-weight: 800; }
+.rec-badge .dot { width:12px; height:12px; border-radius:50%; background: #ff4d4f; box-shadow: 0 0 12px rgba(255,77,79,0.45); animation: pulse 1s infinite; }
+@keyframes pulse { 0% { transform: scale(1); opacity: 1 } 50% { transform: scale(1.2); opacity: 0.75 } 100% { transform: scale(1); opacity: 1 } }
+.overlay-timer { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-weight: 700; font-size: 20px; }
+
+/* main: waveform + levels */
+.overlay-main { display: flex; gap: 14px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.waveform { flex: 1 1 60%; height: 160px; border-radius: 10px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.04); box-shadow: inset 0 -6px 12px rgba(0,0,0,0.18); overflow: hidden; }
+.levels { display:flex; gap:10px; flex: 0 0 32%; min-width: 180px; align-items:center; justify-content:center; }
+.level-col { display:flex; flex-direction:column; align-items:center; gap:8px; width:100%; }
+.level-label { font-weight:800; font-size:14px; color: var(--overlay-text); }
+.level-meter { width: 100%; height: 110px; background: rgba(255,255,255,0.03); border-radius:8px; overflow:hidden; border: 1px solid rgba(255,255,255,0.04); display:flex; align-items:flex-end; justify-content:center; }
+.level-fill { width:100%; height:6%; background: linear-gradient(180deg,#6ef37a,#ffd25c,#ff6b6b); transition: height 80ms linear; }
+
+/* footer controls */
+.overlay-footer { display:flex; flex-direction:column; gap:10px; align-items:center; }
+.control-row { display:flex; gap:12px; align-items:center; }
+.ctrl-btn { display:inline-flex; align-items:center; gap:8px; background: rgba(255,255,255,0.06); color: var(--overlay-text); padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.06); cursor: pointer; font-weight:700; min-width:100px; justify-content:center; transition: transform 120ms ease, box-shadow 120ms ease; min-height:44px; }
+.ctrl-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.18); }
+.ctrl-btn.stop { background: linear-gradient(90deg,#ff4d4f,#ff6a6a); box-shadow: 0 6px 18px rgba(255,77,79,0.14); border: none; }
+.ctrl-btn.ghost { background: transparent; border: 1px solid rgba(255,255,255,0.06); }
+
+/* small hint */
+.small-hint { color: rgba(255,255,255,0.9); font-size:13px; }
+
+/* overlay message */
+.overlay-message { margin-top: 8px; color: rgba(255,255,255,0.9); font-weight:600; font-size:14px; }
+
+/* カウントダウンモーダル（UI） */
+.countdown-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1300;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+.countdown-modal[aria-hidden="false"] { opacity: 1; pointer-events: auto; }
+.countdown-panel { width: min(420px,86%); text-align:center; padding: 26px; border-radius: 14px; background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.45)); border: 1px solid rgba(255,255,255,0.04); color: var(--overlay-text); box-shadow: 0 30px 80px rgba(0,0,0,0.6); }
+.ring { width: 120px; height: 120px; margin: 6px auto 0; border-radius: 50%; box-shadow: inset 0 -8px 20px rgba(0,0,0,0.55), 0 8px 30px rgba(0,0,0,0.45); position: relative; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.03), transparent 30%); }
+.count-number { font-size: 92px; font-weight:900; line-height:1; margin: 6px 0; }
+.count-sub { font-size: 14px; color: rgba(255,255,255,0.85); margin-top: 6px; }
+
+/* processing modal */
+.processing-modal { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 1400; pointer-events: none; opacity: 0; transition: opacity 200ms ease; }
+.processing-modal[aria-hidden="false"] { opacity: 1; pointer-events: auto; }
+.processing-panel { background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.45)); border-radius: 12px; padding: 18px 22px; display:flex; gap:12px; align-items:center; border:1px solid rgba(255,255,255,0.04); color:var(--overlay-text); box-shadow:0 30px 80px rgba(0,0,0,0.6); }
+.proc-text { font-weight:700; color: rgba(255,255,255,0.88); }
+
+/* レスポンシブ調整 */
+@media (max-width: 720px) {
+  .waveform { height: 120px; }
+  .level-meter { height: 90px; }
+  .count-number { font-size: 72px; }
+  .overlay-panel { padding: 14px; }
+
+  /* 設定内レイアウトを縦積み寄せにする */
+  .setting-item { flex-direction: column; align-items: stretch; gap: 8px; }
+  .setting-item label { text-align: left; }
+}
+
+#metronomeContainer{ display:flex; justify-content:center; gap:6px; margin-top:12px; }
+.metronome-beat{ width:12px; height:12px; background:#fff; border-radius:50%; transform:scale(1); transition:transform 0.1s ease,opacity 0.1s ease; opacity:0.5; }

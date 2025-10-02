@@ -1,0 +1,76 @@
+<!DOCTYPE html><!--最初の設定-->
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>ログイン</title>
+  <link rel="stylesheet" href="base.css">
+  <link rel="stylesheet" href="login.css">
+</head>
+
+
+
+<body>
+  <div class="container">
+    
+    <div class="logo">
+      <img src="image/appname.png" alt="アプリ名">
+    </div>
+
+    <!-- 見出し -->
+    <h1>ログイン</h1>
+
+    <!-- 入力欄 -->
+    <div class="form-group">
+      <label for="name">ID</label>
+      <input type="text" id="name">
+    </div>
+
+    <div class="form-group">
+      <label for="password">パスワード</label>
+      <input type="password" id="password">
+    </div><br>
+
+
+    <button1 id="loginBtn">ログイン</button1>
+    <p id="error">IDまたはパスワードが間違っています</p>
+
+    <br>
+    <button_sp id="makeBtn">新規アカウント作成</button_sp>
+    <button_sp id="makeTBtn">団体作成</button_sp>
+
+
+
+    
+
+    <br><!-- おためし -->
+    <p class="help-link" id="helpLink">ヘルプ</p>
+
+    <div id="helpPopup" class="popup">
+      <div class="popup-content">
+        <span class="popup-close">&times;</span>
+          <p>【ログインについて】<br>登録済みの「ユーザー名」と「パスワード」を入力してください。</p>
+          <p>【新規アカウント作成について】<br>新規登録画面では以下の情報を入力してください。<ul>
+              <li>ID(他のユーザーと重複しない名前)</li>
+              <li>パスワード（英数字のみ）</li>
+              <li>所属する団体の招待コード</li>
+              </ul>
+          </p>
+          <p>【団体について】<br>本アプリは、ユーザーが所属する「団体（学校・部活動・サークルなど）」単位で利用されます。<br>
+              団体に所属することで、録音やフィードバックのデータを団体内で管理・共有できます。<br>
+              団体の作成ページより団体の作成、招待コード(任意の文字列)の発行を行うことが出来ます。</p>
+          <p>【お問い合わせ】<br>
+              ご不明点やトラブルが解決しない場合は、サポート窓口(support@example.com)までご連絡ください。</p>
+      </div>
+    </div>
+
+
+
+
+  </div>
+
+    <script src="login.js"></script>
+    <!--じゃばすくりぷと読み込み、あっちで動きの設定-->
+</body>
+
+</html>
