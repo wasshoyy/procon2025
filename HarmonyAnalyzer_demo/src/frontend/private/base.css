@@ -1,0 +1,401 @@
+/* base.css — マージ & 改良版（全文） */
+
+/* フォント */
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&display=swap');
+
+:root{
+  /* --- 既存ライトテーマ（優先） --- */
+  --bg-start: #f0fff0;
+  --bg-end:   #e6fce6;
+
+  --text-color: #234d23;
+  --title-color: #2d6030;
+  --muted-text: #6b7280;
+
+  --accent: #3e703e;
+  --accent-dark: #2b4f2b;
+  --accent-weak: rgba(62,112,62,0.12);
+
+  --panel-bg: #ffffff;
+  --panel-bg-soft: #f5fff5;
+  --panel-border: #dbeedb;
+
+  --radius-md: 12px;
+
+  /* --- 互換性 / 録音 UI 用の追加変数 --- */
+  --bg-1: var(--bg-start);
+  --bg-2: var(--bg-end);
+
+  --muted: var(--muted-text);
+  --glass-border: var(--panel-border);
+  --card-bg: var(--panel-bg);
+  --panel-bg-soft: var(--panel-bg-soft);
+
+  --ui-font: 'M PLUS Rounded 1c', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial;
+
+  --focus: 3px solid rgba(62,112,62,0.14);
+  --shadow: 0 10px 30px rgba(0,0,0,0.08);
+
+  /* overlay 専用（必要ならダーク寄せに変える） */
+  --record-overlay-bg: linear-gradient(180deg, rgba(4,8,6,0.5), rgba(6,10,8,0.7));
+  --overlay-panel-bg: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  --overlay-text: #ffffff;
+}
+
+/* -------------------------
+   ページ / ベーススタイル
+   ------------------------- */
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: var(--ui-font);
+  color: var(--text-color);
+  background: linear-gradient(to bottom right, var(--bg-start), var(--bg-end));
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.35;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;/* feedback.css — グラフ画面専用スタイル */
+
+/* -------------------- カード共通 -------------------- */
+.card {
+  background: var(--panel-bg, #fff);
+  border-radius: 0.5rem;
+  border: 1px solid var(--panel-border, #ccc);
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+  overflow: hidden;
+  position: relative;
+  padding: 0.5rem;
+}
+
+/* カード内ヘッダ（タイトル色を共通変数で） */
+.card-header {
+  font-weight: 700;
+  color: var(--title-color, #111);
+  padding: 0.25rem 0.5rem;
+}
+
+/* キャンバスは親のサイズにフィットする */
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+}
+
+/* -------------------- Pitch Chart のレイアウト -------------------- */
+.pitch-chart-wrap {
+  flex: 1 1 auto;
+  height: 35vh; /* 画面高さの 50% */
+  min-height: 200px;
+  max-height: 300px;
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+  position: relative;
+}
+
+/* pitch のキャンバスを伸ばす */
+.pitch-canvas {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+}
+
+/* -------------------- 赤バースライダー -------------------- */
+#redBarSlider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  background: linear-gradient(90deg, #ff7, transparent);
+  border-radius: 999px;
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: -14px;
+  cursor: pointer;
+  z-index: 40;
+}
+#redBarSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ff4d4f;
+  border: 2px solid #fff;
+  cursor: pointer;
+}
+#redBarSlider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ff4d4f;
+  border: 2px solid #fff;
+  cursor: pointer;
+}
+
+/* -------------------- Y軸スライダーオーバーレイ -------------------- */
+.pitch-chart-wrap {
+  display: flex;
+  align-items: stretch;
+  position: relative; /* ← 必要なければ削除可 */
+  min-height: 200px;
+  max-height: 300px;
+}
+
+.pitch-canvas {
+  flex: 1 1 auto; /* ← 余白を全部埋める */
+  width: 100%;
+  height: 100%;
+}
+
+#ySliderOverlay {
+  position: relative; /* ← absolute をやめる */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;       /* スライダー領域の幅 */
+  z-index: 1;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+
+.vslider-wrapper {
+  width: 30px;       /* スライダーの当たり判定エリア */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* レンジを回転して縦に見せる */
+.vslider {
+  -webkit-appearance: none;
+  appearance: none;
+  position: absolute;
+  left: 0%;
+  top: 40%;
+  transform-origin: center center;
+  transform: translate(-50%, -50%) rotate(-90deg);
+  width: 160px;   /* JS で高さに合わせて幅を書き換える */
+  height: 16px;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+
+/* トラック */
+.vslider::-webkit-slider-runnable-track { background: var(--panel-border); height: 6px; border-radius: 4px; }
+.vslider::-moz-range-track { background: var(--panel-border); height: 6px; border-radius: 4px; }
+/* サム（つまみ） */
+.vslider::-webkit-slider-thumb { -webkit-appearance: none; background: var(--accent, #3b82f6); border-radius:50%; width:16px; height:16px; margin-top:-5px; }
+.vslider::-moz-range-thumb { background: var(--accent, #3b82f6); border-radius:50%; width:16px; height:16px; }
+
+/* -------------------- 音量比率行 -------------------- */
+.volume-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+.volume-label {
+  flex: 0 0 5.5rem;
+  font-weight: 600;
+}
+.progress-value {
+  min-width: 3.5rem;
+  text-align: right;
+}
+
+
+/* -------------------- Flex ユーティリティ -------------------- */
+.flex-1 { flex: 1 1 0; min-width: 0; }
+.flex-2 { flex: 2 2 0; min-width: 0; }
+
+/* -------------------- レスポンシブ微調整 -------------------- */
+@media (max-width: 640px) {
+  #redBarSlider {
+    width: 40%;
+    right: 1rem;
+  }
+  #ySliderOverlay { transform: none; }
+}
+
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  padding-bottom: 70px; /* bottom-nav の高さ分確保 */
+  box-sizing: border-box;
+  background: linear-gradient(180deg, var(--bg-start), var(--bg-end));
+}
+
+/* ユーティリティ */
+.hidden { display: none !important; }
+.text-muted { color: var(--muted-text); }
+.small { font-size: .875rem; }
+
+/* 共通ボタン */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  padding: .55rem 1rem;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  transition: background .12s ease, transform .06s ease;
+  font-weight: 600;
+}
+/* ------------------------------
+   下部ナビ
+   ------------------------------ */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: var(--panel-bg);
+  border-top: 1px solid var(--panel-border);
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+  z-index: 1000;
+}
+.nav-btn {
+  background: transparent;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  color: var(--muted);
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+.nav-btn:active { transform: translateY(0); }
+
+.icon-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.03);
+  border: 1px solid rgba(0,0,0,0.04);
+  overflow: hidden;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.icon-wrap img { max-width: 72%; max-height: 72%; object-fit: contain; display: block; }
+.nav-btn:hover .icon-wrap {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+}
+.nav-label { font-size: 12px; color: var(--muted); }
+
+/* 音量カード / プログレス */
+.volume-card {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.progress {
+  position: relative;
+  flex: 1 1 auto;
+  height: 8px;
+  border-radius: 9999px;
+  background: #f3f4f6;
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  border-radius: 9999px;
+  transition: width 120ms linear;
+  background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+}
+
+/* Y オーバーレイ位置用 */
+.y-overlay { position: fixed; z-index: 1000; pointer-events: auto; }
+
+/* エラースペース */
+#error { color: crimson; min-height: 1.5em; visibility: hidden; }
+#error.show { visibility: visible; }
+
+/* canvas はコンテナにフィット（各ページで上書き可能） */
+canvas { display: block; width: 100%; height: 100%; }
+
+/* コンテナ（recording 等で使用） */
+.container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+
+/* フォーカスの可視化（アクセシビリティ向上） */
+:focus { outline: none; }
+button:focus-visible, [tabindex]:focus-visible { outline: var(--focus); border-radius: 8px; }
+
+/* スピナー */
+.spinner {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 4px solid rgba(0,0,0,0.06);
+  border-top-color: rgba(0,0,0,0.18);
+  animation: spin 0.88s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ドットローダ */
+.dots { display:inline-block; }
+.dots::after { content: ' . . .'; animation: dots 1s steps(3,end) infinite; }
+@keyframes dots { 0% { content:' .  .  .'; } 33% { content:' . . .' } 66% { content:'. .  .' } 100% { content:' . . .'; } }
+
+/* カードユーティリティ */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  padding: 12px;
+}
+
+/* 小さめのヘルパーカラー */
+.muted { color: var(--muted); }
+
+/* ------------------------------
+   処理中ロック（アップロード中に他の操作を防ぐ）
+   - JS 側で document.body.classList.add('processing-lock') / remove を行います
+   ------------------------------ */
+body.processing-lock .recording-container,
+body.processing-lock .bottom-nav,
+body.processing-lock .start-btn,
+body.processing-lock .nav-btn,
+body.processing-lock .ctrl-btn,
+body.processing-lock .btn-primary,
+body.processing-lock .nav-btn .icon-wrap,
+body.processing-lock .nav-label {
+  pointer-events: none !important;
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* 例外: processing-modal（.processing-modal）自体はロック対象外で表示可能 */
+/* 以上で base.css のマージは完了です。 */

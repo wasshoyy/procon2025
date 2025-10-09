@@ -1,0 +1,20 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "build": "tailwindcss -i private/styles.css -o public/dist/styles.css --minify"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "autoprefixer": "^9.8.8",
+    "postcss": "^7.0.39",
+    "postcss-cli": "^11.0.1",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17"
+  }
+}

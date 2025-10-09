@@ -1,0 +1,147 @@
+/* feedback.css — グラフ画面専用スタイル */
+
+/* -------------------- カード共通 -------------------- */
+.card {
+  background: var(--panel-bg, #fff);
+  border-radius: 0.5rem;
+  border: 1px solid var(--panel-border, #ccc);
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+  overflow: hidden;
+  position: relative;
+  padding: 0.5rem;
+}
+
+/* カード内ヘッダ（タイトル色を共通変数で） */
+.card-header {
+  font-weight: 700;
+  color: var(--title-color, #111);
+  padding: 0.25rem 0.5rem;
+}
+
+/* キャンバスは親のサイズにフィットする */
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+}
+
+
+
+/* pitch のキャンバスを伸ばす */
+.pitch-canvas {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+}
+
+/* -------------------- 赤バースライダー -------------------- */
+#redBarSlider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  background: linear-gradient(90deg, #ff7, transparent);
+  border-radius: 999px;
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: -14px;
+  cursor: pointer;
+  z-index: 40;
+}
+#redBarSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ff4d4f;
+  border: 2px solid #fff;
+  cursor: pointer;
+}
+#redBarSlider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ff4d4f;
+  border: 2px solid #fff;
+  cursor: pointer;
+}
+
+/* 右に重ねて配置するオーバーレイ */
+.pitch-chart-wrap {
+  display: flex;
+  align-items: stretch;
+  position: relative; /* ← 必要なければ削除可 */
+  min-height: 200px;
+  max-height: 300px;
+}
+
+.pitch-canvas {
+  flex: 1 1 auto; /* ← 余白を全部埋める */
+  width: 100%;
+  height: 100%;
+}
+
+#ySliderOverlay {
+  position: relative; /* ← absolute をやめる */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;       /* スライダー領域の幅 */
+  z-index: 1;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+
+
+.vslider-wrapper {
+  width: 30px;       /* スライダーの当たり判定エリア */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vslider {
+  writing-mode: bt-lr;  /* Chrome/Edge用：縦方向 */
+  -webkit-appearance: slider-vertical; /* Safari/Chromeで縦スライダー */
+  width: 8px;
+  height: 100%;
+}
+
+/* トラック */
+.vslider::-webkit-slider-runnable-track { background: var(--panel-border); height: 6px; border-radius: 4px; }
+.vslider::-moz-range-track { background: var(--panel-border); height: 6px; border-radius: 4px; }
+/* サム（つまみ） */
+.vslider::-webkit-slider-thumb { -webkit-appearance: none; background: var(--accent, #3b82f6); border-radius:50%; width:16px; height:16px; margin-top:-5px; }
+.vslider::-moz-range-thumb { background: var(--accent, #3b82f6); border-radius:50%; width:16px; height:16px; }
+
+/* -------------------- 音量比率行 -------------------- */
+.volume-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+.volume-label {
+  flex: 0 0 5.5rem;
+  font-weight: 600;
+}
+.progress-value {
+  min-width: 3.5rem;
+  text-align: right;
+}
+
+
+/* -------------------- Flex ユーティリティ -------------------- */
+.flex-1 { flex: 1 1 0; min-width: 0; }
+.flex-2 { flex: 2 2 0; min-width: 0; }
+
+/* -------------------- レスポンシブ微調整 -------------------- */
+@media (max-width: 640px) {
+  #redBarSlider {
+    width: 40%;
+    right: 1rem;
+  }
+  #ySliderOverlay { transform: none; }
+}

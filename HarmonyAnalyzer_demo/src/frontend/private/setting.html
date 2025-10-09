@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>設定画面</title>
+  <link rel="stylesheet" href="base.css">
+  <link rel="stylesheet" href="setting.css">
+</head>
+
+<body>
+  <div class="page">
+    <header class="folder-header">
+      <h1 class="title">設定</h1>
+    </header>
+
+    <main class="folder-page">
+      <div id="userInfo">
+          <p>ユーザー情報</p>
+          <p id="userName"></p>
+          <p id="orgName"></p>
+      </div>
+      
+      <button id="logoutBtn">ログアウト</button>
+    </main>
+       
+
+    
+    
+    
+    <div class="bottom-nav">
+      <button class="nav-btn" id="micBtn" aria-label="録音">
+        <div class="icon-wrap"><img src="image/mic-icon.png" alt="録音"></div>
+        <div class="nav-label">録音</div>
+      </button>
+
+      <button class="nav-btn" id="fldBtn" aria-label="フォルダ">
+        <div class="icon-wrap"><img src="image/folder-icon.png" alt="フォルダ"></div>
+        <div class="nav-label">フォルダ</div>
+      </button>
+
+      <button class="nav-btn" id="setBtn" aria-label="設定">
+        <div class="icon-wrap"><img src="image/settings-icon.png" alt="設定"></div>
+        <div class="nav-label">設定</div>
+      </button>
+    </div>
+
+  </div>
+
+  <script src="setting.js"></script>
+</body>
+</html>

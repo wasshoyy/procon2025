@@ -1,0 +1,70 @@
+/*全体共有のcss*/
+body{
+  background: linear-gradient(to bottom right, #f0fff0, #e6fce6);
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  color: #234d23;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+h1 {
+  margin-bottom: 30px;
+  font-size: 24px;
+  color: #2d6030;
+}
+
+.container {
+  text-align: center;
+  margin-top: 30px;
+  width: 90%;
+  max-width: 480px;
+}
+
+.bottom-nav {
+  display: flex;
+  justify-content: space-between; /*これで両端に配置*/
+  /*justify-content: space-evenly; /*均等に広げる*/
+  margin-top: 25px;
+  padding-bottom: 30px;
+}
+
+.title {
+  font-size: 36px;
+  color: #2d6030;
+  margin-bottom: 20px;
+}
+
+.nav-btn img {
+  width: 80px;
+  height: 80px;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.hidden {
+  display: none;
+}
+
+#message-area.show {
+  visibility: visible;
+}
+
+#error {
+  color: red;
+  min-height: 1.5em;  /*常に1行分の高さを確保*/
+  visibility: hidden; /*消すけど高さは残る*/
+}
+
+#error.show {
+  visibility: visible; /*表示したいときだけ見せる */
+}
