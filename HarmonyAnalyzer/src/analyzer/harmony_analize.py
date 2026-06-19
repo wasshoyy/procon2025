@@ -11,22 +11,15 @@ from itertools import combinations
 
 files = sys.argv[1:]
 
-'''
-[
-    "./harmonic_inputs/111.wav",
-    "./harmonic_inputs/222.wav",
-    "./harmonic_inputs/333.wav",
-]
-'''
-
 sr = 44100
 frame_length = 2048
 hop_length = 512
 
-def consonance_score(ratio):
+def consonance_score(ratio, freq_diff, freq_ave):
     ideal_ratio = [1.0,2.0,1.5,1.333,1.25,1.2,1.6]
     dist = min([abs(ratio - ir) for ir in ideal_ratio])
-    return 1/(1+dist)
+    # 周波数比と周波数差の両方を考慮した協和度スコア
+    return 1 / (1 + dist*freq_ave / (1 + freq_diff ))
 
 mix = None
 for path in files:
@@ -52,7 +45,9 @@ for t in range(min_len):
         frame_scores.append(np.nan)
         continue
     ratios = [max(a,b)/min(a,b) for a,b in combinations(freqs,2)]
-    scores = [consonance_score(r) for r in ratios]
+    freq_diffs = [abs(a - b) for a,b in combinations(freqs,2)]
+    freq_ave = [(a + b)/2 for a,b in combinations(freqs,2)]
+    scores = [consonance_score(r, d, a) for r, d, a in zip(ratios, freq_diffs,freq_ave)]
     frame_scores.append(np.mean(scores))
 
 print(json.dumps(frame_scores, ensure_ascii=False))

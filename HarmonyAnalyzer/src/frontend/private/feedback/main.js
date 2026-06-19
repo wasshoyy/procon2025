@@ -1,4 +1,4 @@
-// js/main.js
+// feedback/main.js
 import { THEME, clamp } from './utils.js';
 import { DataManager } from './dataManager.js';
 import { registerChartPlugins, createPitchChart, updatePitchChart } from './charts/pitchChart.js';

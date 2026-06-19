@@ -91,7 +91,15 @@ function getFolderDisplayName(name, isDirectory) {
 
 // 描画
 function renderItems(items, { search, sort, view }) {
-  let filtered = items.filter(it => it.name?.toLowerCase().includes(search?.toLowerCase()));
+  const filtered = items.filter(it => {
+    const name = it.name ?? '';
+    const matchesSearch = (search ?? '') === ''
+      ? true
+      : name.toLowerCase().includes(search.toLowerCase());
+  
+    const shouldDelete = !it.is_directory && !/\.webm$/i.test(name);
+    return matchesSearch && !shouldDelete;
+  });  
 
   // ソート
   if (sort === "name-asc") filtered.sort((a, b) => a.name.localeCompare(b.name, "ja"));
@@ -117,8 +125,6 @@ function renderItems(items, { search, sort, view }) {
 
   // アイテム描画
   for (const item of filtered) {
-    if (!item.is_directory && !item.name.match(/\.webm$/i)) continue;
-    
     const el = document.createElement("div");
     el.className = "file-item";
     el.setAttribute("tabindex", "0");

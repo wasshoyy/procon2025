@@ -228,9 +228,10 @@
       // BPM 脈動リング
       pulseTime += dt;
       if (pulseTime > beatInterval) pulseTime -= beatInterval;
-      const pulseRatio = Math.sin((pulseTime / beatInterval) * Math.PI);
+      const pulseRatio = Math.abs(Math.sin((pulseTime / beatInterval) * Math.PI));
       ctx.beginPath();
-      const radius = 25 + pulseRatio * 35;
+      const safePulse = Math.max(0, pulseRatio);
+      const radius = 25 + safePulse * 35;
       ctx.arc(wfWidth/2, wfHeight/2, radius, 0, Math.PI*2);
       ctx.strokeStyle = `rgba(255,255,255,${0.3 + pulseRatio*0.5})`;
       ctx.lineWidth = 4 + pulseRatio*4;

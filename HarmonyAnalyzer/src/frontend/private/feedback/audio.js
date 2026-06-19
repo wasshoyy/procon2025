@@ -1,4 +1,4 @@
-// js/audio.js
+// feedback/audio.js
 export function buildServerAudioUrl(folder, candidateFile) {
   const folderSegments = (folder || '').split('/').filter(Boolean);
   const encodedFolderPath = folderSegments.map(seg => encodeURIComponent(seg)).join('/');
@@ -50,8 +50,8 @@ export function setupAudioPlayer(state, filepath) {
   const { audioPlayer, redBarSlider, dm } = state;
   if (!audioPlayer) return;
 
-  const fileName = getBasename(filepath); // 例: "test_20250930_093044.wav"
-  const folder   = getDirname(filepath);  // 例: "/app/src/uploads/aa高校/フルート/untitled_120_4-4"
+  const fileName = getBasename(filepath);
+  const folder   = getDirname(filepath);
 
   clearAudioListeners(audioPlayer);
 

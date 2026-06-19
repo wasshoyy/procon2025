@@ -9,8 +9,10 @@
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com" defer></script>
 
-  <!-- Chart.js & Plugins -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <!-- Chart.js UMD（グローバルに window.Chart を生やす） -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+
+  <!-- プラグイン（Chart本体の後） -->
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.1/dist/chartjs-plugin-annotation.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js" defer></script>
 

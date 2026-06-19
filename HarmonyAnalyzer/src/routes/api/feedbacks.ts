@@ -144,7 +144,7 @@ router.get('/items', async (req: Request, res: Response) => {
         } else {
           try {
             const result = JSON.parse(stdoutData);
-            const length = result.brightness.length;
+            const length = result.pitch.length;
             const analysis = [];
             for (let i = 0; i < length; i++) {
               analysis.push({
@@ -288,7 +288,6 @@ function sendWithRange(req: Request, res: Response, fullPath: string, mime: stri
   fs.createReadStream(fullPath, { start, end }).pipe(res);
 }
 
-// 例: /api/feedback/server/aa高校/フルート/untitled_120_4-4/test_20250930_093044.wav
 router.get("/server/:subpath(*)", (req: express.Request<{ subpath?: string }>, res) => {
   try {
     // 「*」にマッチしたサブパスを取得

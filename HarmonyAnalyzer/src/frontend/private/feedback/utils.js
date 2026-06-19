@@ -1,11 +1,11 @@
-// js/utils.js
+// feedback/utils.js
 export const DURATION_MS = 5000;
 export const RESOLUTION_MS = 5;
 export const A4_MIDI = 69;
 export const SEMITONES_PER_OCTAVE = 12;
 export const NOTE_NAMES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 export const HOP_LENGTH = 512;
-export const SAMPLERATE = 44100;
+export const SAMPLERATE = 48000;
 
 export function getCSS(varName, fallback) {
   const v = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();

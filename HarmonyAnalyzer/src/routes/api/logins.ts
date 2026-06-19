@@ -52,10 +52,10 @@ router.post('/', async (req: Request, res: Response) => {
     const token = jwt.sign(userInfo, SECRET_KEY, { expiresIn: '1h' });
 
     res.cookie('auth_token', token, {
-      httpOnly: true,      // JSからアクセス不可
-      secure: false,       // HTTPSでなくてもOK
-      sameSite: 'lax',     // CSRF対策、HTTPでも機能
-      maxAge: 3600 * 1000  // 1時間
+      httpOnly: true,               // JSからアクセス不可
+      secure: false,                // HTTPSでなくてもOK
+      sameSite: 'lax',              // CSRF対策、HTTPでも機能
+      maxAge: 3 * 24 * 3600 * 1000  // 3日間
     });
 
     res.json({ success: true, user });
