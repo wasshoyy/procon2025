@@ -1,5 +1,5 @@
-// js/ui/xscroll.js
-import { THEME, clamp } from '../utils.js';
+// feedback/ui/xscroll.js
+import { THEME } from '../utils.js';
 
 export function updateXScrollBar(state) {
   const { xScrollBarCanvas, xScrollCtx, pitchChart, dm } = state;

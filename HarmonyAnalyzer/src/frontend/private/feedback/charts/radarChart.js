@@ -1,4 +1,4 @@
-// js/charts/radarChart.js
+// feedback/charts/radarChart.js
 import { THEME, toRGBA } from '../utils.js';
 
 export function createRadarChart(state) {

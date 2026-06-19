@@ -96,6 +96,18 @@ function convertWebmToWav(inputPath: string, outputPath: string) {
   });
 }
 
+function trimWav(inputPath: string, outputPath: string, offsetSec: number) {
+  return new Promise<void>((resolve, reject) => {
+    ffmpeg(inputPath)
+      .seekInput(offsetSec)
+      .audioCodec('copy')
+      .on('end', () => resolve())
+      .on('error', (err) => reject(err))
+      .save(outputPath);
+  });
+}
+
+
 function formatFilename(input: string): string {
   // 例: "test_20250930_093044"
   const match = input.match(/^(.+?)_(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})$/);
@@ -175,6 +187,20 @@ router.post('/upload/:path', upload.single('file'), async (req: Request, res: Re
     const audioPath = path.join(targetDir, newFilename);
     await convertWebmToWav(targetPath, audioPath);
 
+    // フォームから取得
+    const bpm = parseFloat((req.body as any).bpm) || 120;
+    const beats = parseInt((req.body as any).beats, 10) || 4;
+    const countInBars = parseInt((req.body as any).countInBars, 10) || 1;
+
+    // カウントイン時間（秒）
+    const offsetSec = countInBars * beats * (60 / bpm);
+
+    /*
+    // 変換後の WAV に対して頭出し
+    const trimmedPath = audioPath.replace(/\.wav$/, '_trim.wav');
+    await trimWav(audioPath, trimmedPath, offsetSec);
+    await fs.promises.rename(trimmedPath, audioPath);
+    */
     console.log(`[recording] 保存されたファイルのパス: ${audioPath}`);
 
     if (!fs.existsSync(audioPath)) {
@@ -221,9 +247,9 @@ router.post('/upload/:path', upload.single('file'), async (req: Request, res: Re
                 volume: result.volume[i],
               });
             }
-            const filepath = targetPath;
+            const filepath = path.posix.join(folder, filename);
             const view_name = formatFilename(filename.replace(".webm", ""));
-            const option = parseBpmAndMeterOne(targetPath);
+            const option = parseBpmAndMeterOne(filepath);
             resolve({ id: soundId, analysis, filepath, view_name, option });
           } catch (err) {
             console.error("JSON parse error:", err);

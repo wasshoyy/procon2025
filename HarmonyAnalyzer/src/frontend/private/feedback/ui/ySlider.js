@@ -1,4 +1,4 @@
-// js/ui/ySlider.js
+// feedback/ui/ySlider.js
 import { clamp } from '../utils.js';
 
 export function layoutVerticalSlider(state) {

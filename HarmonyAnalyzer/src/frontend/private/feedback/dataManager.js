@@ -1,5 +1,5 @@
-// js/dataManager.js
-import { DURATION_MS, RESOLUTION_MS } from './utils.js';
+// feedback/dataManager.js
+import { DURATION_MS, RESOLUTION_MS, HOP_LENGTH, SAMPLERATE } from './utils.js';
 
 export class DataManager {
   constructor(externalData = null, bpm = 120, beatsPerBar = 4, baseA = 442) {
@@ -32,8 +32,8 @@ export class DataManager {
   }
 
   updateBeatParams() {
-    const msPerBeat = 60000 / this.bpm;
-    this.pointsPerBeat = Math.max(1, Math.round(msPerBeat / RESOLUTION_MS));
+    const secPerPoint = HOP_LENGTH / SAMPLERATE;
+    this.pointsPerBeat = Math.max(1, Math.round((60 / this.bpm) / secPerPoint));
   }
 
   getYRange() {

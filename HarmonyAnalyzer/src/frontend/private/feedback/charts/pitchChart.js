@@ -1,4 +1,4 @@
-// js/charts/pitchChart.js
+// feedback/charts/pitchChart.js
 import { HOP_LENGTH, SAMPLERATE, THEME, toRGBA, clamp, computeNoteTicks, freqToNoteNameWithOctave } from '../utils.js';
 
 export function registerChartPlugins() {
@@ -10,22 +10,24 @@ export function registerChartPlugins() {
   }
 }
 
-function buildBarlineAnnotations(dm) {
+function buildBeatAndBarAnnotations(dm) {
   const annotations = {};
-  const pointsPerBeatFrames = Math.round((60 / dm.bpm) / (HOP_LENGTH / SAMPLERATE));
-  const totalBeats = Math.floor(dm.totalFrames / pointsPerBeatFrames);
+  const ppb = (60 * SAMPLERATE) / (dm.bpm * HOP_LENGTH);
+  if (!ppb || ppb <= 0) return annotations;  // 念のためガード
+
+  const totalBeats = Math.floor(dm.totalPoints / ppb);
   for (let beat = 0; beat <= totalBeats; beat++) {
-    if (beat % dm.beatsPerBar === 0) {
-      const x = beat * pointsPerBeatFrames;
-      annotations[`bar_${x}`] = {
-        type: 'line',
-        xMin: x,
-        xMax: x,
-        borderColor: THEME.grid,
-        borderWidth: 1
-      };
-    }
+    const x = beat * ppb;
+    const isBar = (beat % dm.beatsPerBar === 0);
+    annotations[`${isBar ? 'bar' : 'beat'}_${x}`] = {
+      type: 'line',
+      xMin: x,
+      xMax: x,
+      borderColor: THEME.grid,
+      borderWidth: isBar ? 2 : 1  // 小節線は太く、拍線は細く
+    };
   }
+
   return annotations;
 }
 
@@ -59,6 +61,7 @@ export function createPitchChart(state) {
           title: { display: true, text: '拍', color: THEME.ticks },
           ticks: {
             color: THEME.ticks,
+            stepSize: dm.pointsPerBeat || 1,
             callback: (val) => {
               if (dm.pointsPerBeat > 0 && (val % dm.pointsPerBeat === 0)) {
                 return ((Math.floor(val / dm.pointsPerBeat) % dm.beatsPerBar) + 1);
@@ -92,7 +95,7 @@ export function createPitchChart(state) {
       plugins: {
         annotation: {
           annotations: {
-            ...buildBarlineAnnotations(dm),
+            ...buildBeatAndBarAnnotations(dm),
             redBar: {
               type: 'line',
               xMin: state.redBarIndex,
@@ -163,19 +166,20 @@ export function updatePitchChart(state) {
   pitchChart.options.plugins.annotation.annotations = {
     ...(() => {
       const ann = {};
-      const totalBeats = Math.floor(dm.totalPoints / dm.pointsPerBeat);
+      const ppb = dm.pointsPerBeat || 1;
+      const totalBeats = Math.floor(dm.totalPoints / ppb);
       for (let beat = 0; beat <= totalBeats; beat++) {
-        if (beat % dm.beatsPerBar === 0) {
-          const x = beat * dm.pointsPerBeat;
-          ann[`bar_${x}`] = {
-            type: 'line',
-            xMin: x,
-            xMax: x,
-            borderColor: THEME.grid,
-            borderWidth: 1
-          };
-        }
+        const x = beat * ppb;
+        const isBar = (beat % dm.beatsPerBar === 0);
+        ann[`${isBar ? 'bar' : 'beat'}_${x}`] = {
+          type: 'line',
+          xMin: x,
+          xMax: x,
+          borderColor: THEME.grid,
+          borderWidth: isBar ? 3 : 1
+        };
       }
+
       ann.redBar = {
         type: 'line',
         xMin: state.redBarIndex,

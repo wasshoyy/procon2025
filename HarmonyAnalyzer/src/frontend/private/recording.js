@@ -31,6 +31,7 @@
   let visBeatIndex = 0;
   let visBeatDuration = 0;
 
+  let countInTimeoutId = null;
   let countdownInProgress = false;
 
   // helpers
@@ -45,7 +46,7 @@
 
     try {
       mediaStream = await navigator.mediaDevices.getUserMedia({
-        audio: { channelCount: 1, sampleRate: 44100, sampleSize: 16 }
+        audio: { channelCount: 1, sampleRate: 48000, sampleSize: 16 }
       });
     } catch (err) {
       console.error('マイクへのアクセスに失敗しました', err);
@@ -243,6 +244,9 @@
   async function sendRecording(blob, folderName) {
     const form = new FormData();
     form.append('file', blob, 'recording.webm');
+    form.append('bpm', tempoInput?.value || '120');
+    form.append('beats', (timeSigSelect?.value || '4/4').split('/')[0]);
+    form.append('countInBars', countInSelect?.value || '1');
     const url = `../api/recording/upload/${encodeURIComponent(folderName)}`;
     const resp = await fetch(url, { method: 'POST', body: form });
     if (!resp.ok) throw new Error(`HTTPエラー: ${resp.status}`);

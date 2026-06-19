@@ -1,4 +1,4 @@
-// js/ui/volume.js
+// feedback/ui/volume.js
 
 /**
  * プレイヤーごとの音量割合を表示する UI を更新する関数
