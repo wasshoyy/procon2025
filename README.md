@@ -61,7 +61,7 @@ http://localhost:3000/login
 
 ### コンテナを停止
 ```bash
-docker compose down
+docker compose down -v
 ```
 
 ---
