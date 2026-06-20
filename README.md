@@ -61,6 +61,11 @@ http://localhost:3000/login
 
 ### コンテナを停止
 ```bash
+docker compose down
+```
+
+### データベースを全消去
+```bash
 docker compose down -v
 ```
 
