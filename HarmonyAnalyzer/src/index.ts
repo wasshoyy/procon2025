@@ -55,15 +55,21 @@ async function initDb() {
   await pool.query(`
     INSERT INTO organizations (name, invite_code)
     VALUES ('宇部高専吹奏楽部', '12345')
-    ON CONFLICT (name) DO NOTHING;
+    ON CONFLICT DO NOTHING;
   `);
   await pool.query(`
     INSERT INTO users (name, password, organizationid)
-    VALUES (
-      'test',
-      '$2b$10$8InveIzlKjDSm8cT4VizQOeDa/PTr6FKHBSavcmFOeKqV6ju7WZfO',
-      (SELECT id FROM organizations WHERE name = '宇部高専吹奏楽部')
-    )
+    SELECT
+      v.name,
+      v.password,
+      (SELECT id FROM organizations WHERE name='宇部高専吹奏楽部')
+    FROM (
+      VALUES
+        ('test', '$2b$10$1nPfSKJX/lCRxLYX5KwhHuQNOjaaVamcnkI4YIro2tR7gaTsD621S'),
+        ('太郎', '$2b$10$yJIzymowL7lBmWNeHswYheXMhW3pjORb2VJ00XFJzrrLuHBAuRKnW'),
+        ('花子', '$2b$10$VfdCOYIgjikOcXR8puLPKe79lTFLZtSqfuyGMWXmKVxzIdeaibzx2'),
+        ('procon','$2b$10$I8cW7ey3sDi46wBl4jo.Se92US44ZwVKqcKQOPSMk74uI5LF0kg1q')
+    ) AS v(name, password)
     ON CONFLICT (name) DO NOTHING;
   `);
   await pool.query(`
@@ -73,40 +79,73 @@ async function initDb() {
       (SELECT id FROM organizations WHERE name='宇部高専吹奏楽部')
     FROM (
       VALUES
-        ('宇部高専吹奏楽部/クラリネット/テスト_120_4-4'),
-        ('宇部高専吹奏楽部/フルート/マーチ_70_6-8')
+        ('宇部高専吹奏楽部/クラリネット/チューリップ_120_4-4'),
+        ('宇部高専吹奏楽部/クラリネット/協調度_120_4-4'),
+        ('宇部高専吹奏楽部/クラリネット/音色_120_4-4')
     ) AS v(folderpath)
     ON CONFLICT (folderpath) DO NOTHING;
   `);
-  /*
   await pool.query(`
     INSERT INTO sounds (filename, userid, songid, date)
     SELECT
       v.filename,
-      (SELECT id FROM users WHERE name='test'),
-      (SELECT id FROM songs WHERE folderpath='宇部高専吹奏楽部/クラリネット/マーチ_120_4-4'),
+      (SELECT id FROM users WHERE name=v.username),
+      (SELECT id FROM songs WHERE folderpath=v.songpath),
       v.date
     FROM (
       VALUES
-        ('test_20250912_000000.webm', DATE '2025-09-12'),
-        ('test_20250912_111111.webm', DATE '2025-09-12'),
-        ('test_20250912_123456.webm', DATE '2025-09-12')
-    ) AS v(filename, date)
+        (
+          '太郎_20251011_142629.webm',
+          '太郎',
+          '宇部高専吹奏楽部/クラリネット/チューリップ_120_4-4',
+          DATE '2025-10-11'
+        ),
+        (
+          '花子_20251011_141002.webm',
+          '花子',
+          '宇部高専吹奏楽部/クラリネット/チューリップ_120_4-4',
+          DATE '2025-10-11'
+        ),
+        (
+          'procon_20251009_115113.webm',
+          'procon',
+          '宇部高専吹奏楽部/クラリネット/協調度_120_4-4',
+          DATE '2025-10-09'
+        ),
+        (
+          'procon_20251009_115140.webm',
+          'procon',
+          '宇部高専吹奏楽部/クラリネット/協調度_120_4-4',
+          DATE '2025-10-09'
+        ),
+        (
+          'procon_20251009_115202.webm',
+          'procon',
+          '宇部高専吹奏楽部/クラリネット/協調度_120_4-4',
+          DATE '2025-10-09'
+        ),
+        (
+          'procon_20251009_115537.webm',
+          'procon',
+          '宇部高専吹奏楽部/クラリネット/協調度_120_4-4',
+          DATE '2025-10-09'
+        ),
+        (
+          '太郎_20251009_110854.webm',
+          '太郎',
+          '宇部高専吹奏楽部/クラリネット/音色_120_4-4',
+          DATE '2025-10-09'
+        ),
+        (
+          '花子_20251009_110946.webm',
+          '花子',
+          '宇部高専吹奏楽部/クラリネット/音色_120_4-4',
+          DATE '2025-10-09'
+        )
+    ) AS v(filename, username, songpath, date)
     ON CONFLICT (filename) DO NOTHING;
   `);
-  await pool.query(`
-    INSERT INTO sounds (filename, userid, songid, date)
-    VALUES (
-      'test_20250912_000001.webm',
-      (SELECT id FROM users WHERE name='test'),
-      (SELECT id FROM songs WHERE folderpath='宇部高専吹奏楽部/フルート/マーチ_70_6-8'),
-      DATE '2025-09-12'
-    )
-    ON CONFLICT (filename) DO NOTHING;
-  `);
-  */
 }
-
 
 app.use(express.json());
 

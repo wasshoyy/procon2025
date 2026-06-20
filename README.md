@@ -64,6 +64,11 @@ http://localhost:3000/login
 docker compose down
 ```
 
+### データベースを全消去
+```bash
+docker compose down -v
+```
+
 ---
 ## 補足
 作品名は「Harmony Analyzer」ですが、ソースコード上のディレクトリ名は「HarmonyAnalyzer」としていることに注意してください。
